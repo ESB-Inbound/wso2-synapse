@@ -127,7 +127,12 @@
             <artifactId>bsf-all</artifactId>
             <version>${bsf.version}</version>
         </dependency>
-	<dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.0.0.Final</version>
+        </dependency>
+        <dependency>
 	    <groupId>org.jruby</groupId>
 	    <artifactId>jruby-complete</artifactId>
 	    <version>${jruby.version}</version>

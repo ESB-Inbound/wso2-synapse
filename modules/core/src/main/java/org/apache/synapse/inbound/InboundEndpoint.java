@@ -48,6 +48,8 @@ public class InboundEndpoint implements ManagedLifecycle {
     private String fileName;
     PollingProcessor pollingProcessor;
     private SynapseEnvironment synapseEnvironment;
+    private int port;
+    private InboundListner inboundListner;
 
     public InboundEndpoint() {
 
@@ -56,11 +58,16 @@ public class InboundEndpoint implements ManagedLifecycle {
     public void init(SynapseEnvironment se) {
         log.info("Initializing Inbound Endpoint: " + getName());
         synapseEnvironment = se;
-        pollingProcessor = getPollingProcessor();
-        if(pollingProcessor != null){
-        	pollingProcessor.init();
-        }else{ 
-        	log.error("Polling processor not found for Inbound EP : " + name + " Protocol: " + protocol);
+        if(protocol.equals("http")){
+            inboundListner = getInboundListner();
+            inboundListner.start();
+        }else {
+            pollingProcessor = getPollingProcessor();
+            if (pollingProcessor != null) {
+                pollingProcessor.init();
+            } else {
+                log.error("Polling processor not found for Inbound EP : " + name + " Protocol: " + protocol);
+            }
         }
     }
     /**
@@ -70,15 +77,28 @@ public class InboundEndpoint implements ManagedLifecycle {
      * http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html
      */
     private PollingProcessor getPollingProcessor(){
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled()){
             log.debug("Registering mediator extensions found in the classpath.. ");
         }
         // Get polling processors
         Iterator<PollingProcessorFactory>it = Service.providers(PollingProcessorFactory.class);
-        while (it.hasNext()) {
+        while (it.hasNext()){
         	PollingProcessorFactory factory =  it.next();
         	Properties properties = Utils.paramsToProperties(parametersMap);
         	return factory.creatPollingProcessor(protocol, fileName, properties, interval, injectingSeq, onErrorSeq, synapseEnvironment);
+        }
+        return null;
+    }
+    private InboundListner getInboundListner(){
+        if (log.isDebugEnabled()){
+            log.debug("Registering mediator extensions found in the classpath.. ");
+        }
+        // Get Inbound Listners
+        Iterator<ListnerFactory>it = Service.providers(ListnerFactory.class);
+        while (it.hasNext()){
+            ListnerFactory factory =  it.next();
+
+            return  factory.creatInboundListner(protocol, port,synapseEnvironment , injectingSeq, onErrorSeq);
         }
         return null;
     }
@@ -87,6 +107,9 @@ public class InboundEndpoint implements ManagedLifecycle {
         log.info("Destroying Inbound Endpoint: " + getName());
         if(pollingProcessor != null){
         	pollingProcessor.destroy();
+        }
+        if(inboundListner != null){
+            inboundListner.shutDown();
         }
     }
 
@@ -162,4 +185,11 @@ public class InboundEndpoint implements ManagedLifecycle {
         return parametersMap.get(name);
     }
 
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 }

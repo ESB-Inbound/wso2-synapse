@@ -22,6 +22,7 @@ public class InboundRequestQueue {
         executorService = Executors.newFixedThreadPool(InboundHttpConstants.WORKER_POOL_SIZE, new InboundThreadFactory("request"));
         eventQueue = new ArrayBlockingQueue<InboundSourceRequest>(InboundHttpConstants.REQUEST_BUFFER_CAPACITY);
     }
+
     public void publish(InboundSourceRequest inboundSourceRequest) {
         try {
             eventQueue.put(inboundSourceRequest);
