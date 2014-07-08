@@ -48,7 +48,6 @@ public class InboundEndpoint implements ManagedLifecycle {
     private String fileName;
     PollingProcessor pollingProcessor;
     private SynapseEnvironment synapseEnvironment;
-    private int port;
     private InboundListner inboundListner;
 
     public InboundEndpoint() {
@@ -97,7 +96,8 @@ public class InboundEndpoint implements ManagedLifecycle {
         Iterator<ListnerFactory>it = Service.providers(ListnerFactory.class);
         while (it.hasNext()){
             ListnerFactory factory =  it.next();
-
+            String ports = parametersMap.get(InboundEndpointConstants.INBOUND_ENDPOINT_PARAMETER_HTTP_PORT);
+            int port  = Integer.parseInt(ports);
             return  factory.creatInboundListner(protocol, port,synapseEnvironment , injectingSeq, onErrorSeq);
         }
         return null;
@@ -185,11 +185,5 @@ public class InboundEndpoint implements ManagedLifecycle {
         return parametersMap.get(name);
     }
 
-    public int getPort() {
-        return port;
-    }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
 }
