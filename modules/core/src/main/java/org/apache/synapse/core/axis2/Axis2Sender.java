@@ -34,6 +34,7 @@ import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.SynapseException;
 import org.apache.synapse.aspects.statistics.StatisticsReporter;
 import org.apache.synapse.endpoints.EndpointDefinition;
+import org.apache.synapse.inbound.InboundMessageContextQueue;
 import org.apache.synapse.transport.nhttp.NhttpConstants;
 import org.apache.synapse.util.MessageHelper;
 import org.apache.synapse.util.POXUtils;
@@ -91,6 +92,18 @@ public class Axis2Sender {
         // fault processing code
         if (messageContext.isDoingREST() && messageContext.isFault()) {
             POXUtils.convertSOAPFaultToPOX(messageContext);
+        }
+
+        // Check if the response is for a message that came to the Inbound Endpoint
+        // If so send it through the ChannelHandlerContext
+
+        if((Boolean)messageContext.getProperty(SynapseConstants.IS_INBOUND)){
+            try {
+                InboundMessageContextQueue.getInstance().getMessageContextQueue().put(smc);
+            } catch (InterruptedException e) {
+                handleException("Unexpected error when sending a message that was received by the InboundEndpoint ", e);
+            }
+            return;
         }
 
         try {

@@ -28,6 +28,9 @@ public class InboundHttpListner implements InboundListner {
         this.synapseEnvironment = synapseEnvironment;
         this.injectSeq = injectSeq;
         this.faultSeq = faultSeq;
+
+        InboundSourceResponseSender responseSender = new InboundSourceResponseSender();
+        responseSender.run();
     }
 
     public InboundHttpListner() {
