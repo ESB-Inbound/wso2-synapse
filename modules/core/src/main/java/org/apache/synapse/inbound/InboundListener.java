@@ -1,7 +1,7 @@
 package org.apache.synapse.inbound;
 
 
-public interface InboundListner {
+public interface InboundListener {
 
     public void start();
 

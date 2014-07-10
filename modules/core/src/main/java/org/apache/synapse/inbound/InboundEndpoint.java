@@ -21,8 +21,6 @@ package org.apache.synapse.inbound;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.ManagedLifecycle;
-import org.apache.synapse.MessageContext;
-import org.apache.synapse.config.xml.MediatorSerializer;
 import org.apache.synapse.core.SynapseEnvironment;
 
 import sun.misc.Service;
@@ -48,7 +46,7 @@ public class InboundEndpoint implements ManagedLifecycle {
     private String fileName;
     PollingProcessor pollingProcessor;
     private SynapseEnvironment synapseEnvironment;
-    private InboundListner inboundListner;
+    private InboundListener inboundListener;
 
     public InboundEndpoint() {
 
@@ -58,8 +56,8 @@ public class InboundEndpoint implements ManagedLifecycle {
         log.info("Initializing Inbound Endpoint: " + getName());
         synapseEnvironment = se;
         if(protocol.equals("http")){
-            inboundListner = getInboundListner();
-            inboundListner.start();
+            inboundListener = getInboundListener();
+            inboundListener.start();
         }else {
             pollingProcessor = getPollingProcessor();
             if (pollingProcessor != null) {
@@ -88,17 +86,18 @@ public class InboundEndpoint implements ManagedLifecycle {
         }
         return null;
     }
-    private InboundListner getInboundListner(){
+
+    private InboundListener getInboundListener(){
         if (log.isDebugEnabled()){
             log.debug("Registering mediator extensions found in the classpath.. ");
         }
-        // Get Inbound Listners
-        Iterator<ListnerFactory>it = Service.providers(ListnerFactory.class);
+        // Get Inbound Listeners
+        Iterator<ListenerFactory>it = Service.providers(ListenerFactory.class);
         while (it.hasNext()){
-            ListnerFactory factory =  it.next();
+            ListenerFactory factory =  it.next();
             String ports = parametersMap.get(InboundEndpointConstants.INBOUND_ENDPOINT_PARAMETER_HTTP_PORT);
             int port  = Integer.parseInt(ports);
-            return  factory.creatInboundListner(protocol, port,synapseEnvironment , injectingSeq, onErrorSeq);
+            return  factory.createInboundListener(protocol, port, synapseEnvironment, injectingSeq, onErrorSeq);
         }
         return null;
     }
@@ -108,8 +107,8 @@ public class InboundEndpoint implements ManagedLifecycle {
         if(pollingProcessor != null){
         	pollingProcessor.destroy();
         }
-        if(inboundListner != null){
-            inboundListner.shutDown();
+        if(inboundListener != null){
+            inboundListener.shutDown();
         }
     }
 
