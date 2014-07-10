@@ -11,6 +11,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * keeps inbound requests for processing
+ */
 public class InboundRequestQueue {
 
     private static final Log log = LogFactory.getLog(InboundRequestQueue.class);

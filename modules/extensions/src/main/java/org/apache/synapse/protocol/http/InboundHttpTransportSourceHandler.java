@@ -8,7 +8,9 @@ import io.netty.handler.codec.http.*;
 import org.apache.log4j.Logger;
 import org.apache.synapse.core.SynapseEnvironment;
 
-
+/**
+ * actuall event handling class for netty
+ */
 public class InboundHttpTransportSourceHandler extends ChannelInboundHandlerAdapter {
     private Logger logger = Logger.getLogger(InboundHttpTransportSourceHandler.class);
     private SynapseEnvironment synapseEnvironment;
@@ -24,11 +26,22 @@ public class InboundHttpTransportSourceHandler extends ChannelInboundHandlerAdap
 
     private InboundRequestQueue inboundRequestQueue = new InboundRequestQueue();
 
+    /**
+     * activating registerd hndler to accept events.
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
     }
 
+    /**
+     * reciving events through netty.
+     * @param ctx
+     * @param msg
+     * @throws Exception
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         InboundSourceRequest inboundSourceRequest = new InboundSourceRequest();

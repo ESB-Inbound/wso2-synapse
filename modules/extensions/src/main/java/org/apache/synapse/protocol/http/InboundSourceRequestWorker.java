@@ -31,6 +31,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * working class for queue.poll msgs from queue and send it to the medition engine by creating Syanpse msg context.
+ */
 public class InboundSourceRequestWorker implements Runnable {
 
     private static final Log log = LogFactory.getLog(InboundSourceRequestWorker.class);
