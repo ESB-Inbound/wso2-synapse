@@ -35,7 +35,6 @@ public class InboundSourceResponseSender implements Runnable{
     public void run() {
         while(true){
             try {
-                //If the queue is empty the thread gets blocked
                 MessageContext smc = InboundMessageContextQueue.getInstance().getMessageContextQueue().take();
                 ChannelHandlerContext ctx = (ChannelHandlerContext)smc.getProperty(SynapseConstants.CHANNEL_HANDLER_CONTEXT);
 
