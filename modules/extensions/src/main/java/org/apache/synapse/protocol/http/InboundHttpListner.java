@@ -29,8 +29,8 @@ public class InboundHttpListner implements InboundListner {
         this.injectSeq = injectSeq;
         this.faultSeq = faultSeq;
 
-//        InboundSourceResponseSender responseSender = new InboundSourceResponseSender();
-//        responseSender.run();
+        Thread responseSender = new Thread(new InboundSourceResponseSender());
+        responseSender.start();
     }
 
     public InboundHttpListner() {
