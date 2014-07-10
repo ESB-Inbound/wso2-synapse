@@ -38,6 +38,7 @@ public class InboundHttpTransportSourceHandler extends ChannelInboundHandlerAdap
             for (String val : headers.names()) {
                 inboundSourceRequest.addHttpheaders(val, headers.get(val));
             }
+           inboundSourceRequest.setTo(fullHttpRequest.getUri());
             ByteBuf buf = fullHttpRequest.content();
             byte[] bytes = new byte[buf.readableBytes()];
             buf.readBytes(bytes);
@@ -48,6 +49,9 @@ public class InboundHttpTransportSourceHandler extends ChannelInboundHandlerAdap
             }
         }
         inboundSourceRequest.setChannelHandlerContext(ctx);
+        inboundSourceRequest.setSynapseEnvironment(this.synapseEnvironment);
+        inboundSourceRequest.setInjectSeq(this.injectSeq);
+        inboundSourceRequest.setFaultSeq(this.faultSeq);
         inboundRequestQueue.publish(inboundSourceRequest);
     }
 
