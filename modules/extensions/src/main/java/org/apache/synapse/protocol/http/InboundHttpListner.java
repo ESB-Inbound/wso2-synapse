@@ -13,6 +13,9 @@ import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.inbound.InboundListner;
 import org.apache.synapse.protocol.http.utils.InboundHttpConstants;
 
+/**
+ * Start ServerBootStrap in a given port for http inbound connections
+ */
 
 public class InboundHttpListner implements InboundListner {
     private static Logger logger = Logger.getLogger(InboundHttpListner.class);
@@ -22,6 +25,7 @@ public class InboundHttpListner implements InboundListner {
     private String faultSeq;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
+    private Thread listnerThread;
 
     public InboundHttpListner(int port, SynapseEnvironment synapseEnvironment, String injectSeq, String faultSeq) {
         this.port = port;
@@ -38,7 +42,7 @@ public class InboundHttpListner implements InboundListner {
 
     public void start() {
         logger.info("Starting Inbound Http Listner on Port " + this.port);
-        Thread t = new Thread(new Runnable() {
+        Thread listnerThread = new Thread(new Runnable() {
             public void run() {
                 bossGroup = new NioEventLoopGroup();
                 workerGroup = new NioEventLoopGroup();
@@ -63,12 +67,15 @@ public class InboundHttpListner implements InboundListner {
                 }
             }},
             "Inbound Listner");
-            t.start();
+            listnerThread.start();
     }
 
     public void shutDown() {
         bossGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
+        if(listnerThread != null){
+            listnerThread.stop();
+        }
     }
 
 
