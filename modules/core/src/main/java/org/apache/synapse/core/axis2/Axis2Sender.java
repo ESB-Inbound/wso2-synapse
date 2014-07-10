@@ -97,7 +97,7 @@ public class Axis2Sender {
         // Check if the response is for a message that came to the Inbound Endpoint
         // If so send it through the ChannelHandlerContext
 
-        if((Boolean)messageContext.getProperty(SynapseConstants.IS_INBOUND)){
+        if(Boolean.parseBoolean((String)smc.getProperty(SynapseConstants.IS_INBOUND))){
             try {
                 InboundMessageContextQueue.getInstance().getMessageContextQueue().put(smc);
             } catch (InterruptedException e) {
