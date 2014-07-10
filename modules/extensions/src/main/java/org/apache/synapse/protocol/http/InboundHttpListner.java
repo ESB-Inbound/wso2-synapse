@@ -10,12 +10,12 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.log4j.Logger;
 import org.apache.synapse.core.SynapseEnvironment;
 
-import org.apache.synapse.inbound.InboundListener;
+import org.apache.synapse.inbound.InboundListner;
 import org.apache.synapse.protocol.http.utils.InboundHttpConstants;
 
 
-public class InboundHttpListener implements InboundListener {
-    private static Logger logger = Logger.getLogger(InboundHttpListener.class);
+public class InboundHttpListner implements InboundListner {
+    private static Logger logger = Logger.getLogger(InboundHttpListner.class);
     private int port;
     private SynapseEnvironment synapseEnvironment;
     private String injectSeq;
@@ -23,20 +23,17 @@ public class InboundHttpListener implements InboundListener {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
 
-    public InboundHttpListener(int port, SynapseEnvironment synapseEnvironment, String injectSeq, String faultSeq) {
+    public InboundHttpListner(int port, SynapseEnvironment synapseEnvironment, String injectSeq, String faultSeq) {
         this.port = port;
         this.synapseEnvironment = synapseEnvironment;
         this.injectSeq = injectSeq;
         this.faultSeq = faultSeq;
 
-        /**
-         * Create the ResponseSender on a separate thread
-         */
-        Thread responseSender = new Thread(new InboundSourceResponseSender());
+        InboundSourceResponseSender responseSender = new InboundSourceResponseSender();
         responseSender.run();
     }
 
-    public InboundHttpListener() {
+    public InboundHttpListner() {
     }
 
     public void start() {
@@ -54,7 +51,7 @@ public class InboundHttpListener implements InboundListener {
             try {
                 ch = b.bind(port).sync().channel();
                 ch.closeFuture().sync();
-                logger.info("Inbound Listener Started");
+                logger.info("Inbound Listner Started");
             } catch (InterruptedException e) {
                 logger.info("");
             }
