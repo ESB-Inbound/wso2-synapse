@@ -29,8 +29,8 @@ public class InboundHttpListner implements InboundListner {
         this.injectSeq = injectSeq;
         this.faultSeq = faultSeq;
 
-        InboundSourceResponseSender responseSender = new InboundSourceResponseSender();
-        responseSender.run();
+//        InboundSourceResponseSender responseSender = new InboundSourceResponseSender();
+//        responseSender.run();
     }
 
     public InboundHttpListner() {
@@ -38,27 +38,32 @@ public class InboundHttpListner implements InboundListner {
 
     public void start() {
         logger.info("Starting Inbound Http Listner on Port " + this.port);
-        bossGroup = new NioEventLoopGroup();
-        workerGroup = new NioEventLoopGroup();
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.option(ChannelOption.SO_BACKLOG, InboundHttpConstants.MAXIMUM_CONNECTIONS_QUEUED);
-            b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(new InboundHttpTransportHandlerInitializer(synapseEnvironment, injectSeq, faultSeq));
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                bossGroup = new NioEventLoopGroup();
+                workerGroup = new NioEventLoopGroup();
+                try {
+                    ServerBootstrap b = new ServerBootstrap();
+                    b.option(ChannelOption.SO_BACKLOG, InboundHttpConstants.MAXIMUM_CONNECTIONS_QUEUED);
+                    b.group(bossGroup, workerGroup)
+                            .channel(NioServerSocketChannel.class)
+                            .childHandler(new InboundHttpTransportHandlerInitializer(synapseEnvironment, injectSeq, faultSeq));
 
-            Channel ch = null;
-            try {
-                ch = b.bind(port).sync().channel();
-                ch.closeFuture().sync();
-                logger.info("Inbound Listner Started");
-            } catch (InterruptedException e) {
-                logger.info("");
-            }
-        } finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-        }
+                    Channel ch = null;
+                    try {
+                        ch = b.bind(port).sync().channel();
+                        ch.closeFuture().sync();
+                        logger.info("Inbound Listner Started");
+                    } catch (InterruptedException e) {
+                        logger.info("");
+                    }
+                } finally {
+                    bossGroup.shutdownGracefully();
+                    workerGroup.shutdownGracefully();
+                }
+            }},
+            "Inbound Listner");
+            t.start();
     }
 
     public void shutDown() {

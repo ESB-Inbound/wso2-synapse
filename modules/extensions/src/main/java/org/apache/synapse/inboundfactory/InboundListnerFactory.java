@@ -4,10 +4,8 @@ package org.apache.synapse.inboundfactory;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.inbound.InboundListner;
 import org.apache.synapse.inbound.ListnerFactory;
-import org.apache.synapse.inbound.PollingProcessor;
-import org.apache.synapse.protocol.file.VFSProcessor;
 import org.apache.synapse.protocol.http.InboundHttpListner;
-import org.apache.synapse.protocol.jms.JMSProcessor;
+
 
 public class InboundListnerFactory implements ListnerFactory {
     private static final Object obj = new Object();

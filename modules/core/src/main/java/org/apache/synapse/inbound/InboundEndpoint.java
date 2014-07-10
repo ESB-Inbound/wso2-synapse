@@ -21,8 +21,6 @@ package org.apache.synapse.inbound;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.ManagedLifecycle;
-import org.apache.synapse.MessageContext;
-import org.apache.synapse.config.xml.MediatorSerializer;
 import org.apache.synapse.core.SynapseEnvironment;
 
 import sun.misc.Service;

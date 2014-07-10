@@ -18,7 +18,24 @@ public class InboundSourceRequest {
     private SynapseEnvironment synapseEnvironment;
     private String injectSeq;
     private String faultSeq;
+    private String to;
+    private String replyTo;
 
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public String getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(String replyTo) {
+        this.replyTo = replyTo;
+    }
 
     public String getInjectSeq() {
         return injectSeq;
