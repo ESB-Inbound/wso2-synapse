@@ -19,6 +19,7 @@ import org.apache.axis2.transport.TransportUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.SynapseConstants;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.mediators.base.SequenceMediator;
 import org.apache.synapse.transport.nhttp.util.NhttpUtil;
 
@@ -55,6 +56,7 @@ public class InboundSourceRequestWorker implements Runnable {
                 msgCtx.setEnvelope(soapEnvelope);
                 msgCtx.setProperty(SynapseConstants.IS_INBOUND, "true");
                 msgCtx.setProperty(SynapseConstants.CHANNEL_HANDLER_CONTEXT, inboundSourceRequest.getChannelHandlerContext());
+
                 if (inboundSourceRequest.getInjectSeq() == null || inboundSourceRequest.getInjectSeq().equals("")) {
                     log.error("Sequence name not specified. Sequence : " + inboundSourceRequest.getInjectSeq());
                 }
