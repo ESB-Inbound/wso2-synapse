@@ -26,6 +26,7 @@ public class InboundHttpListner implements InboundListner {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private Thread listnerThread;
+    private Thread responseSender;
 
     public InboundHttpListner(int port, SynapseEnvironment synapseEnvironment, String injectSeq, String faultSeq) {
         this.port = port;
@@ -33,8 +34,8 @@ public class InboundHttpListner implements InboundListner {
         this.injectSeq = injectSeq;
         this.faultSeq = faultSeq;
 
-        Thread responseSender = new Thread(new InboundSourceResponseSender());
-        responseSender.start();
+        responseSender = new Thread(new InboundSourceResponseSender());
+
     }
 
     public InboundHttpListner() {
@@ -42,7 +43,7 @@ public class InboundHttpListner implements InboundListner {
 
     public void start() {
         logger.info("Starting Inbound Http Listner on Port " + this.port);
-        Thread listnerThread = new Thread(new Runnable() {
+        listnerThread = new Thread(new Runnable() {
             public void run() {
                 bossGroup = new NioEventLoopGroup();
                 workerGroup = new NioEventLoopGroup();
@@ -68,6 +69,11 @@ public class InboundHttpListner implements InboundListner {
             }},
             "Inbound Listner");
             listnerThread.start();
+
+        if(responseSender != null){
+            logger.info("Starting Inbound response sender");
+            responseSender.start();
+        }
     }
 
     public void shutDown() {
@@ -76,6 +82,10 @@ public class InboundHttpListner implements InboundListner {
         if(listnerThread != null){
             listnerThread.stop();
         }
+        if(responseSender != null){
+            responseSender.stop();
+        }
+
     }
 
 

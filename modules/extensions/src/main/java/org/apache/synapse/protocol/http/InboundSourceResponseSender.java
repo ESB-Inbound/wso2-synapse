@@ -18,12 +18,25 @@
 
 package org.apache.synapse.protocol.http;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.util.CharsetUtil;
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.log4j.Logger;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.inbound.InboundMessageContextQueue;
+
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
+import static io.netty.handler.codec.http.HttpResponseStatus.OK;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
  * Sends responses to requests that are sent to the InboundEndpoint
@@ -41,16 +54,30 @@ public class InboundSourceResponseSender implements Runnable{
                 //Retrieve the SOAP envelope from the MessageContext
                 SOAPEnvelope envelope = smc.getEnvelope();
 
-                if (envelope.getHeader() == null) {
-                    logger.info("envelope headers are not present");
-                    return;
+                if(envelope != null){
+                    FullHttpResponse fullHttpResponse = getHttpResponse(envelope);
+                    //Send the envelope using the ChannelHandlerContext
+                    ctx.writeAndFlush(fullHttpResponse);
                 }
-                //Send the envelope using the ChannelHandlerContext
-                ctx.writeAndFlush(envelope);
-
             } catch (InterruptedException e) {
-                e.printStackTrace();
+             logger.error(e.getMessage());
             }
         }
     }
+
+    private FullHttpResponse getHttpResponse(SOAPEnvelope soapEnvelope){
+        byte[] bytes = soapEnvelope.toString().getBytes();
+        ByteBuf CONTENT =  Unpooled.unreleasableBuffer(Unpooled.copiedBuffer(bytes));
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK,CONTENT.duplicate());
+        response.headers().set(CONTENT_TYPE, "text/xml");
+        response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
+        response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+       return response;
+    }
+
+
+
+
+
+
 }
