@@ -479,4 +479,5 @@ public final class SynapseConstants {
     //Inbound endpoint
     public static final String IS_INBOUND = "isInbound";
     public static final String CHANNEL_HANDLER_CONTEXT = "ChannelHandlerContext";
+    public static final String OUT_SEQUENCE="outSequence";
 }

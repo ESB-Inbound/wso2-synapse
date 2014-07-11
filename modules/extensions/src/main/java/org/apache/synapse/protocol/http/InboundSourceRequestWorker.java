@@ -56,6 +56,7 @@ public class InboundSourceRequestWorker implements Runnable {
                 msgCtx.setEnvelope(soapEnvelope);
                 msgCtx.setProperty(SynapseConstants.IS_INBOUND, "true");
                 msgCtx.setProperty(SynapseConstants.CHANNEL_HANDLER_CONTEXT, inboundSourceRequest.getChannelHandlerContext());
+                msgCtx.setProperty(SynapseConstants.OUT_SEQUENCE,inboundSourceRequest.getOutSeq());
 
                 if (inboundSourceRequest.getInjectSeq() == null || inboundSourceRequest.getInjectSeq().equals("")) {
                     log.error("Sequence name not specified. Sequence : " + inboundSourceRequest.getInjectSeq());

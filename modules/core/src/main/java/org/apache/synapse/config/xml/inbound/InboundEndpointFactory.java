@@ -42,6 +42,7 @@ public class InboundEndpointFactory {
         inboundEndpoint.setSuspend(Boolean.parseBoolean(inboundEndpointElem.getAttributeValue(new QName(InboundEndpointConstants.INBOUND_ENDPOINT_SUSPEND))));
         inboundEndpoint.setInjectingSeq(inboundEndpointElem.getAttributeValue(new QName(InboundEndpointConstants.INBOUND_ENDPOINT_SEQUENCE)));
         inboundEndpoint.setOnErrorSeq(inboundEndpointElem.getAttributeValue(new QName(InboundEndpointConstants.INBOUND_ENDPOINT_ERROR_SEQUENCE)));
+        inboundEndpoint.setOutSequence(inboundEndpointElem.getAttributeValue(new QName(InboundEndpointConstants.INBOUND_ENDPOINT_OUT_SEQUENCE)));
         
         OMElement parametersElt = inboundEndpointElem.getFirstChildWithName(new QName(XMLConfigConstants.SYNAPSE_NAMESPACE,
                 InboundEndpointConstants.INBOUND_ENDPOINT_PARAMETERS));

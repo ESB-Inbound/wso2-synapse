@@ -9,4 +9,5 @@ public class InboundHttpConstants {
     public final static int REQUEST_BUFFER_CAPACITY = 1024;
     public final static String IS_INBOUND_ENDPOINT = "inbound-endpoint";
     public final static String CHANNEL_HANDLER_CONTEXT = "channel-handler-context";
+    public final static String TEXT_XML="text/xml";
 }
