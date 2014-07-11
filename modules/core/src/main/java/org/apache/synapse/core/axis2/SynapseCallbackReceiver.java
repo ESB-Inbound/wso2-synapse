@@ -49,6 +49,7 @@ import org.apache.synapse.endpoints.AbstractEndpoint;
 import org.apache.synapse.endpoints.Endpoint;
 import org.apache.synapse.endpoints.FailoverEndpoint;
 import org.apache.synapse.endpoints.dispatch.Dispatcher;
+import org.apache.synapse.mediators.base.SequenceMediator;
 import org.apache.synapse.transport.nhttp.NhttpConstants;
 import org.apache.synapse.transport.passthru.PassThroughConstants;
 import org.apache.synapse.transport.passthru.Pipe;
@@ -492,7 +493,12 @@ public class SynapseCallbackReceiver extends CallbackReceiver {
             
             // send the response message through the synapse mediation flow
             try {
-                synapseOutMsgCtx.getEnvironment().injectMessage(synapseInMessageContext);
+                if(synapseOutMsgCtx.getProperty(SynapseConstants.OUT_SEQUENCE)!=null && !synapseOutMsgCtx.getProperty(SynapseConstants.OUT_SEQUENCE).equals("")){
+                    SequenceMediator seq = (SequenceMediator) synapseOutMsgCtx.getEnvironment().getSynapseConfiguration().getSequence((String)synapseOutMsgCtx.getProperty(SynapseConstants.OUT_SEQUENCE));
+                    synapseOutMsgCtx.getEnvironment().injectAsync(synapseInMessageContext,seq);
+                }else {
+                    synapseOutMsgCtx.getEnvironment().injectMessage(synapseInMessageContext);
+                }
             } catch (SynapseException syne) {
                 Stack stack = synapseInMessageContext.getFaultStack();
                 if (stack != null &&

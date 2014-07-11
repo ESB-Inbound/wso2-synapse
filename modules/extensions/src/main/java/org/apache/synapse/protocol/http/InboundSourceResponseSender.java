@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.inbound.InboundMessageContextQueue;
+import org.apache.synapse.protocol.http.utils.InboundHttpConstants;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
@@ -69,7 +70,7 @@ public class InboundSourceResponseSender implements Runnable{
         byte[] bytes = soapEnvelope.toString().getBytes();
         ByteBuf CONTENT =  Unpooled.unreleasableBuffer(Unpooled.copiedBuffer(bytes));
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK,CONTENT.duplicate());
-        response.headers().set(CONTENT_TYPE, "text/xml");
+        response.headers().set(CONTENT_TYPE, InboundHttpConstants.TEXT_XML);
         response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
        return response;

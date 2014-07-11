@@ -31,4 +31,5 @@ public class InboundEndpointConstants {
     public static final String INBOUND_ENDPOINT_PARAMETER = "parameter";
     public static final String INBOUND_ENDPOINT_PARAMETER_NAME = "name";
     public static final String INBOUND_ENDPOINT_PARAMETER_HTTP_PORT = "inbound.http.port";
+    public static final String INBOUND_ENDPOINT_OUT_SEQUENCE = "outsequence";
 }
