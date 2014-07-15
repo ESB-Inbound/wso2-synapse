@@ -40,8 +40,9 @@ public class InboundEndpoint implements ManagedLifecycle {
     private boolean isSuspend;
 
     private String injectingSeq;
-    private String outSequence;
+
     private String onErrorSeq;
+    private String outSequence;
     private Map<String,String> parametersMap = new LinkedHashMap<String,String>();
 
     private String fileName;
@@ -185,6 +186,7 @@ public class InboundEndpoint implements ManagedLifecycle {
         return parametersMap.get(name);
     }
 
+
     public String getOutSequence() {
         return outSequence;
     }
@@ -192,4 +194,5 @@ public class InboundEndpoint implements ManagedLifecycle {
     public void setOutSequence(String outSequence) {
         this.outSequence = outSequence;
     }
+
 }

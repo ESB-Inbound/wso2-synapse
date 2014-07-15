@@ -113,7 +113,7 @@ public class SynapseCallbackReceiver extends CallbackReceiver {
      * to take at the Synapse level
      *
      * @param messageCtx the Axis2 message context of the reply received
-     * @throws AxisFault
+     * @throws org.apache.axis2.AxisFault
      */
     public void receive(MessageContext messageCtx) throws AxisFault {
 
@@ -191,7 +191,7 @@ public class SynapseCallbackReceiver extends CallbackReceiver {
      * @param synapseOutMsgCtx the corresponding (outgoing) Synapse MessageContext for the above
      *                         Axis2 MC, that holds Synapse specific information such as the error
      *                         handler stack and local properties etc.
-     * @throws AxisFault       if the message cannot be processed
+     * @throws org.apache.axis2.AxisFault       if the message cannot be processed
      */
     private void handleMessage(String messageID ,MessageContext response,
         org.apache.synapse.MessageContext synapseOutMsgCtx, AsyncCallback callback) throws AxisFault {
@@ -298,8 +298,8 @@ public class SynapseCallbackReceiver extends CallbackReceiver {
             response.setProperty(SynapseConstants.ISRESPONSE_PROPERTY, Boolean.TRUE);
             response.setProperty(MessageContext.TRANSPORT_OUT,
                     axisOutMsgCtx.getProperty(MessageContext.TRANSPORT_OUT));
-            response.setProperty(org.apache.axis2.Constants.OUT_TRANSPORT_INFO,
-                    axisOutMsgCtx.getProperty(org.apache.axis2.Constants.OUT_TRANSPORT_INFO));
+            response.setProperty(Constants.OUT_TRANSPORT_INFO,
+                    axisOutMsgCtx.getProperty(Constants.OUT_TRANSPORT_INFO));
             response.setTransportIn(axisOutMsgCtx.getTransportIn());
             response.setTransportOut(axisOutMsgCtx.getTransportOut());
 
@@ -308,14 +308,14 @@ public class SynapseCallbackReceiver extends CallbackReceiver {
             if (axisOutMsgCtx.isDoingMTOM()) {
                 response.setDoingMTOM(true);
                 response.setProperty(
-                        org.apache.axis2.Constants.Configuration.ENABLE_MTOM,
-                        org.apache.axis2.Constants.VALUE_TRUE);
+                        Constants.Configuration.ENABLE_MTOM,
+                        Constants.VALUE_TRUE);
             }
             if (axisOutMsgCtx.isDoingSwA()) {
                 response.setDoingSwA(true);
                 response.setProperty(
-                        org.apache.axis2.Constants.Configuration.ENABLE_SWA,
-                        org.apache.axis2.Constants.VALUE_TRUE);
+                        Constants.Configuration.ENABLE_SWA,
+                        Constants.VALUE_TRUE);
             }
 
             // when axis2 receives a soap message without addressing headers it users
@@ -339,11 +339,11 @@ public class SynapseCallbackReceiver extends CallbackReceiver {
             }
 
             Object messageType = axisOutMsgCtx.getProperty(
-                    org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
+                    Constants.Configuration.MESSAGE_TYPE);
             if (!HTTPConstants.MEDIA_TYPE_X_WWW_FORM.equals(messageType)) {
                  // copy the message type property that's used by the out message to the
                  // response message
-                response.setProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE,
+                response.setProperty(Constants.Configuration.MESSAGE_TYPE,
                     messageType);
             }
 

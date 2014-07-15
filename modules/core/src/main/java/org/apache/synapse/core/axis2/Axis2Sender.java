@@ -34,12 +34,18 @@ import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.SynapseException;
 import org.apache.synapse.aspects.statistics.StatisticsReporter;
 import org.apache.synapse.endpoints.EndpointDefinition;
+
 import org.apache.synapse.inbound.InboundMessageContextQueue;
+
 import org.apache.synapse.transport.nhttp.NhttpConstants;
 import org.apache.synapse.util.MessageHelper;
 import org.apache.synapse.util.POXUtils;
+import sun.misc.Service;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * This class helps the Axis2SynapseEnvironment implement the send method
@@ -47,6 +53,8 @@ import java.util.Map;
 public class Axis2Sender {
 
     private static final Log log = LogFactory.getLog(Axis2Sender.class);
+    private static  InboundMessageContextQueue inboundMessageContextQueue = InboundMessageContextQueue.getInstance();
+
 
     /**
      * Send a message out from the Synapse engine to an external service
@@ -98,12 +106,11 @@ public class Axis2Sender {
         // If so send it through the ChannelHandlerContext
 
         if(Boolean.parseBoolean((String)smc.getProperty(SynapseConstants.IS_INBOUND))){
-            try {
-                InboundMessageContextQueue.getInstance().getMessageContextQueue().put(smc);
-            } catch (InterruptedException e) {
-                handleException("Unexpected error when sending a message that was received by the InboundEndpoint ", e);
-            }
-            return;
+
+            inboundMessageContextQueue.publish(smc);
+                      return;
+
+
         }
 
         try {
@@ -194,7 +201,7 @@ public class Axis2Sender {
             if(strEndpoint != null){
             	sb.append(strEndpoint + ", ");
             }    	
-            Map<String, Object> mHeader = (Map<String, Object>)msgContext.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+            Map<String, Object> mHeader = (Map<String, Object>)msgContext.getProperty(MessageContext.TRANSPORT_HEADERS);
             if(mHeader != null){
                 for(String strKey:mHeader.keySet()){
                 	sb.append(strKey + ":"+mHeader.get(strKey).toString()+",");
