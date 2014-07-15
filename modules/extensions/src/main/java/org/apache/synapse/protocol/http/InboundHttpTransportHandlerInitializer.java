@@ -18,11 +18,14 @@ public class InboundHttpTransportHandlerInitializer extends ChannelInitializer<S
     private SynapseEnvironment synapseEnvironment;
     private String injectSeq;
     private String faultSeq;
+    private  String outSeq;
 
-    public InboundHttpTransportHandlerInitializer(SynapseEnvironment synapseEnvironment, String injectSeq, String faultSeq) {
+    public InboundHttpTransportHandlerInitializer(SynapseEnvironment synapseEnvironment, String injectSeq, String faultSeq,String outSequence) {
         this.synapseEnvironment = synapseEnvironment;
         this.injectSeq = injectSeq;
         this.faultSeq = faultSeq;
+        this.outSeq=outSequence;
+
     }
 
     /**
@@ -36,6 +39,6 @@ public class InboundHttpTransportHandlerInitializer extends ChannelInitializer<S
         ChannelPipeline p = ch.pipeline();
         p.addLast(new HttpServerCodec());
         p.addLast(new HttpObjectAggregator(InboundHttpConstants.MAXIMUM_CHUNK_SIZE_AGGREGATOR));
-        p.addLast("handler", new InboundHttpTransportSourceHandler(synapseEnvironment, injectSeq, faultSeq));
+        p.addLast("handler", new InboundHttpTransportSourceHandler(synapseEnvironment, injectSeq, faultSeq,outSeq));
     }
 }

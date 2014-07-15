@@ -23,17 +23,18 @@ public class InboundHttpListner implements InboundListner {
     private SynapseEnvironment synapseEnvironment;
     private String injectSeq;
     private String faultSeq;
+    private String outSequence;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private Thread listnerThread;
     private Thread responseSender;
 
-    public InboundHttpListner(int port, SynapseEnvironment synapseEnvironment, String injectSeq, String faultSeq) {
+    public InboundHttpListner(int port, SynapseEnvironment synapseEnvironment, String injectSeq, String faultSeq,String outSequence) {
         this.port = port;
         this.synapseEnvironment = synapseEnvironment;
         this.injectSeq = injectSeq;
         this.faultSeq = faultSeq;
-
+        this.outSequence=outSequence;
         responseSender = new Thread(new InboundSourceResponseSender());
 
     }
@@ -52,7 +53,7 @@ public class InboundHttpListner implements InboundListner {
                     b.option(ChannelOption.SO_BACKLOG, InboundHttpConstants.MAXIMUM_CONNECTIONS_QUEUED);
                     b.group(bossGroup, workerGroup)
                             .channel(NioServerSocketChannel.class)
-                            .childHandler(new InboundHttpTransportHandlerInitializer(synapseEnvironment, injectSeq, faultSeq));
+                            .childHandler(new InboundHttpTransportHandlerInitializer(synapseEnvironment, injectSeq, faultSeq,outSequence));
 
                     Channel ch = null;
                     try {
@@ -72,7 +73,7 @@ public class InboundHttpListner implements InboundListner {
 
         if(responseSender != null){
             logger.info("Starting Inbound response sender");
-            responseSender.start();
+           responseSender.start();
         }
     }
 

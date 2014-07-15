@@ -41,6 +41,7 @@ public class InboundEndpoint implements ManagedLifecycle {
 
     private String injectingSeq;
     private String onErrorSeq;
+    private String outSequence;
     private Map<String,String> parametersMap = new LinkedHashMap<String,String>();
 
     private String fileName;
@@ -96,7 +97,7 @@ public class InboundEndpoint implements ManagedLifecycle {
             ListnerFactory factory =  it.next();
             String ports = parametersMap.get(InboundEndpointConstants.INBOUND_ENDPOINT_PARAMETER_HTTP_PORT);
             int port  = Integer.parseInt(ports);
-            return  factory.creatInboundListner(protocol, port,synapseEnvironment , injectingSeq, onErrorSeq);
+            return  factory.creatInboundListner(protocol, port,synapseEnvironment , injectingSeq, onErrorSeq,outSequence);
         }
         return null;
     }
