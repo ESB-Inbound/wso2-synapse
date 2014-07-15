@@ -21,6 +21,29 @@ import org.apache.synapse.protocol.http.utils.InboundHttpConstants;
 import org.apache.synapse.transport.nhttp.util.NhttpUtil;
 
 
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.impl.llom.factory.OMXMLBuilderFactory;
+import org.apache.axiom.om.util.UUIDGenerator;
+import org.apache.axiom.soap.SOAPBody;
+import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axiom.soap.SOAPHeader;
+import org.apache.axiom.soap.impl.builder.StAXSOAPModelBuilder;
+import org.apache.axiom.soap.impl.llom.soap11.SOAP11Factory;
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.transport.TransportUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.SynapseConstants;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.apache.synapse.mediators.base.SequenceMediator;
+import org.apache.synapse.transport.nhttp.util.NhttpUtil;
+
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -46,6 +69,7 @@ public class InboundSourceRequestWorker implements Runnable {
         if (inboundSourceRequest != null) {
             try {
                 org.apache.synapse.MessageContext msgCtx = createMessageContext(inboundSourceRequest);
+
                 byte[] bytes = inboundSourceRequest.getContentBytes();
                 String contentType = inboundSourceRequest.getHttpheaders().get(HTTP.CONTENT_TYPE);
                 int soapVersion;
@@ -63,10 +87,6 @@ public class InboundSourceRequestWorker implements Runnable {
                 msgCtx.setProperty(SynapseConstants.CHANNEL_HANDLER_CONTEXT, inboundSourceRequest.getChannelHandlerContext());
                 msgCtx.setProperty(SynapseConstants.OUT_SEQUENCE, inboundSourceRequest.getOutSeq());
                 msgCtx.setWSAAction(inboundSourceRequest.getHttpheaders().get(InboundHttpConstants.SOAP_ACTION));
-
-
-                //  ((Axis2MessageContext) msgCtx).getAxis2MessageContext().setProperty(PassThroughConstants.PASS_THROUGH_PIPE, new Pipe(ByteBuffer.wrap(bytes),"source",null));
-                //   ((Axis2MessageContext) msgCtx).getAxis2MessageContext().setProperty(Constants.Configuration.CONTENT_TYPE, inboundSourceRequest.getHttpheaders().get(HTTP.CONTENT_TYPE));
                 if (inboundSourceRequest.getInjectSeq() == null || inboundSourceRequest.getInjectSeq().equals("")) {
                     log.error("Sequence name not specified. Sequence : " + inboundSourceRequest.getInjectSeq());
                 }
@@ -92,14 +112,17 @@ public class InboundSourceRequestWorker implements Runnable {
 
     private org.apache.synapse.MessageContext createMessageContext(InboundSourceRequest inboundSourceRequest) {
         org.apache.synapse.MessageContext msgCtx = inboundSourceRequest.getSynapseEnvironment().createMessageContext();
-        MessageContext axis2MsgCtx = ((Axis2MessageContext) msgCtx).getAxis2MessageContext();
+
+        MessageContext axis2MsgCtx = ((org.apache.synapse.core.axis2.Axis2MessageContext) msgCtx).getAxis2MessageContext();
+
         axis2MsgCtx.setServerSide(true);
         axis2MsgCtx.setMessageID(UUIDGenerator.getUUID());
 
         String oriUri = inboundSourceRequest.getTo();
         String restUrlPostfix = NhttpUtil.getRestUrlPostfix(oriUri, axis2MsgCtx.getConfigurationContext().getServicePath());
         msgCtx.setTo(new EndpointReference(oriUri));
-      //  ((Axis2MessageContext) msgCtx).setAxis2MessageContext(axis2MsgCtx);
+
+        //  ((Axis2MessageContext) msgCtx).setAxis2MessageContext(axis2MsgCtx);
 
         // There is a discrepency in what I thought, Axis2 spawns a nes threads to
         // send a message is this is TRUE - and I want it to be the other way
@@ -109,19 +132,24 @@ public class InboundSourceRequestWorker implements Runnable {
 
     private SOAPEnvelope toSOAPENV(InputStream inputStream, int version) throws XMLStreamException {
 
+
         try {
             XMLStreamReader reader =
                     XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
+
             SOAPFactory f = null;
             if (version == InboundHttpConstants.SOAP_11) {
                 f = new SOAP11Factory();
             } else if (version == InboundHttpConstants.SOAP_12) {
                 f = new SOAP12Factory();
             }
+
+
             StAXSOAPModelBuilder builder =
 
                     OMXMLBuilderFactory.createStAXSOAPModelBuilder(f, reader);
             SOAPEnvelope soapEnvelope = builder.getSOAPEnvelope();
+
 
             return soapEnvelope;
 

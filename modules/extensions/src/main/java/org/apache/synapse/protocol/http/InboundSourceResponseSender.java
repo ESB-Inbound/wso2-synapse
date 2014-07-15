@@ -24,6 +24,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
+
 import org.apache.axiom.om.impl.llom.factory.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAP12Constants;
@@ -47,6 +48,16 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 
+import io.netty.util.CharsetUtil;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.log4j.Logger;
+import org.apache.synapse.MessageContext;
+import org.apache.synapse.SynapseConstants;
+import org.apache.synapse.inbound.InboundMessageContextQueue;
+import org.apache.synapse.protocol.http.utils.InboundHttpConstants;
+
+
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
@@ -56,11 +67,14 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 /**
  * Sends responses to requests that are sent to the InboundEndpoint
  */
-public class InboundSourceResponseSender implements Runnable {
+
+public class InboundSourceResponseSender implements Runnable{
+
 
     private Logger logger = Logger.getLogger(InboundSourceResponseSender.class);
 
     public void run() {
+
         while (true) {
             try {
                 MessageContext smc = InboundMessageContextQueue.getInstance().getMessageContextQueue().take();
@@ -83,8 +97,9 @@ public class InboundSourceResponseSender implements Runnable {
 
             } catch (InterruptedException e) {
                 logger.error(e.getMessage());
-            }
+
         }
+    }
     }
 
     private FullHttpResponse getHttpResponse(SOAPEnvelope soapEnvelope, String ContentType) {
@@ -111,6 +126,7 @@ public class InboundSourceResponseSender implements Runnable {
         response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
         return response;
+
     }
 
 
@@ -142,6 +158,7 @@ public class InboundSourceResponseSender implements Runnable {
             throw new XMLStreamException(e);
         }
     }
+
 
 
 }

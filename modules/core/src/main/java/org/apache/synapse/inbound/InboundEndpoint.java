@@ -40,6 +40,7 @@ public class InboundEndpoint implements ManagedLifecycle {
     private boolean isSuspend;
 
     private String injectingSeq;
+
     private String onErrorSeq;
     private String outSequence;
     private Map<String,String> parametersMap = new LinkedHashMap<String,String>();
@@ -48,6 +49,7 @@ public class InboundEndpoint implements ManagedLifecycle {
     PollingProcessor pollingProcessor;
     private SynapseEnvironment synapseEnvironment;
     private InboundListner inboundListner;
+
 
     public InboundEndpoint() {
 
@@ -184,5 +186,13 @@ public class InboundEndpoint implements ManagedLifecycle {
         return parametersMap.get(name);
     }
 
+
+    public String getOutSequence() {
+        return outSequence;
+    }
+
+    public void setOutSequence(String outSequence) {
+        this.outSequence = outSequence;
+    }
 
 }
