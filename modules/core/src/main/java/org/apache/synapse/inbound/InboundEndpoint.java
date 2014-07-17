@@ -36,6 +36,7 @@ public class InboundEndpoint implements ManagedLifecycle {
 
     private String name;
     private String protocol;
+    private String classImpl;
     private long interval;
     private boolean isSuspend;
 
@@ -58,15 +59,16 @@ public class InboundEndpoint implements ManagedLifecycle {
     public void init(SynapseEnvironment se) {
         log.info("Initializing Inbound Endpoint: " + getName());
         synapseEnvironment = se;
-        if(protocol.equals("http")){
+        if (protocol.equals("http")) {
             inboundListner = getInboundListner();
             inboundListner.start();
-        }else {
+        } else {
+
             pollingProcessor = getPollingProcessor();
             if (pollingProcessor != null) {
                 pollingProcessor.init();
             } else {
-                log.error("Polling processor not found for Inbound EP : " + name + " Protocol: " + protocol);
+                log.error("Polling processor not found for Inbound EP : " + name + " Protocol: " + protocol + " Class" + classImpl);
             }
         }
     }
@@ -85,7 +87,7 @@ public class InboundEndpoint implements ManagedLifecycle {
         while (it.hasNext()){
         	PollingProcessorFactory factory =  it.next();
         	Properties properties = Utils.paramsToProperties(parametersMap);
-        	return factory.creatPollingProcessor(protocol, fileName, properties, interval, injectingSeq, onErrorSeq, synapseEnvironment);
+        	return factory.creatPollingProcessor(protocol, classImpl, name, properties, interval, injectingSeq, onErrorSeq, synapseEnvironment);
         }
         return null;
     }
@@ -187,6 +189,7 @@ public class InboundEndpoint implements ManagedLifecycle {
     }
 
 
+
     public String getOutSequence() {
         return outSequence;
     }
@@ -194,5 +197,14 @@ public class InboundEndpoint implements ManagedLifecycle {
     public void setOutSequence(String outSequence) {
         this.outSequence = outSequence;
     }
+
+	public String getClassImpl() {
+		return classImpl;
+	}
+
+	public void setClassImpl(String classImpl) {
+		this.classImpl = classImpl;
+	}
+
 
 }

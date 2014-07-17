@@ -106,11 +106,8 @@ public class Axis2Sender {
         // If so send it through the ChannelHandlerContext
 
         if(Boolean.parseBoolean((String)smc.getProperty(SynapseConstants.IS_INBOUND))){
-
             inboundMessageContextQueue.publish(smc);
                       return;
-
-
         }
 
         try {
