@@ -97,7 +97,7 @@ public class InboundEndpoint implements ManagedLifecycle {
         while (it.hasNext()){
             ListnerFactory factory =  it.next();
             String port = parametersMap.get(InboundEndpointConstants.INBOUND_ENDPOINT_PARAMETER_HTTP_PORT);
-           return  factory.createInboundListner(protocol,Integer.parseInt(port) , synapseEnvironment, injectingSeq, onErrorSeq,outSequence);
+           return  factory.createDefaultInboundListner(protocol,port,synapseEnvironment,injectingSeq,onErrorSeq,outSequence);
         }
         return null;
     }
