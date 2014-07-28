@@ -25,10 +25,7 @@ import org.apache.synapse.core.SynapseEnvironment;
 
 import sun.misc.Service;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class InboundEndpoint implements ManagedLifecycle {
 
@@ -63,7 +60,6 @@ public class InboundEndpoint implements ManagedLifecycle {
             inboundListner = getInboundListner();
             inboundListner.start();
         } else {
-
             pollingProcessor = getPollingProcessor();
             if (pollingProcessor != null) {
                 pollingProcessor.init();
@@ -84,6 +80,7 @@ public class InboundEndpoint implements ManagedLifecycle {
         }
         // Get polling processors
         Iterator<PollingProcessorFactory>it = Service.providers(PollingProcessorFactory.class);
+
         while (it.hasNext()){
         	PollingProcessorFactory factory =  it.next();
         	Properties properties = Utils.paramsToProperties(parametersMap);
@@ -99,9 +96,8 @@ public class InboundEndpoint implements ManagedLifecycle {
         Iterator<ListnerFactory>it = Service.providers(ListnerFactory.class);
         while (it.hasNext()){
             ListnerFactory factory =  it.next();
-            String ports = parametersMap.get(InboundEndpointConstants.INBOUND_ENDPOINT_PARAMETER_HTTP_PORT);
-            int port  = Integer.parseInt(ports);
-            return  factory.creatInboundListner(protocol, port,synapseEnvironment , injectingSeq, onErrorSeq,outSequence);
+            String port = parametersMap.get(InboundEndpointConstants.INBOUND_ENDPOINT_PARAMETER_HTTP_PORT);
+           return  factory.createInboundListner(protocol,Integer.parseInt(port) , synapseEnvironment, injectingSeq, onErrorSeq,outSequence);
         }
         return null;
     }
