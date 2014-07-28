@@ -75,12 +75,10 @@
                             !org.apache.synapse.protocol.*,                            
                             !javax.xml.namespace,
                             com.sun.phobos.script.*;resolution:=optional,
-                            io.netty.*;resolution:=optional,
                             javax.xml.namespace; version=0.0.0,
                             org.apache.commons.io; version=0.0.0,
                             *;resolution:=optional
                         </Import-Package>
-                        <Embed-Dependency>netty-all;scope=compile</Embed-Dependency>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Fragment-Host>synapse-core</Fragment-Host>
                     </instructions>
@@ -130,52 +128,11 @@
             <version>${bsf.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.0.0.Final</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <scope>compile</scope>
-            <version>2.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling</artifactId>
-            <scope>compile</scope>
-            <version>1.3.18.GA</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jzlib</artifactId>
-            <version>1.1.2</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.rxtx</groupId>
-            <artifactId>rxtx</artifactId>
-            <version>2.1.7</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.barchart.udt</groupId>
-            <artifactId>barchart-udt-bundle</artifactId>
-            <version>2.3.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
 	    <groupId>org.jruby</groupId>
 	    <artifactId>jruby-complete</artifactId>
 	    <version>${jruby.version}</version>
 	    <scope>test</scope>
         </dependency>
-
-
-
         <dependency>
             <groupId>groovy</groupId>
             <artifactId>groovy-all</artifactId>

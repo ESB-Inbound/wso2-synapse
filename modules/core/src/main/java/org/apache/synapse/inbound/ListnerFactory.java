@@ -27,14 +27,8 @@ import java.util.Properties;
 
 public interface ListnerFactory {
 
+    public InboundListner createInboundListner(String protocol, int port, SynapseEnvironment synapseEnvironment, String injectingSeq, String onErrorSeq, String outSequence);
 
-
-    public InboundListner createInboundListner(String protocol, int port, SynapseEnvironment synapseEnvironment, String injectingSeq, String onErrorSeq,String outSequence);
-
-    public InboundListner createDefaultInboundListner(String protocol,String ports, SynapseEnvironment synapseEnvironment,String injectSeq, String onErrorSeq,String outSeq);
-
-
-
-
+    public InboundListner createDefaultInboundListner(String protocol, String ports, SynapseEnvironment synapseEnvironment, String injectSeq, String onErrorSeq, String outSeq);
 
 }
