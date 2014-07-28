@@ -105,10 +105,7 @@ public class Axis2Sender {
         // Check if the response is for a message that came to the Inbound Endpoint
         // If so send it through the ChannelHandlerContext
 
-        if(Boolean.parseBoolean((String)smc.getProperty(SynapseConstants.IS_INBOUND))){
-            inboundMessageContextQueue.publish(smc);
-                      return;
-        }
+
 
         try {
             messageContext.setProperty(SynapseConstants.ISRESPONSE_PROPERTY, Boolean.TRUE);
@@ -177,7 +174,10 @@ public class Axis2Sender {
 
            // report stats for any component at response sending check point
             StatisticsReporter.reportForAllOnResponseSent(smc);
-
+            if(Boolean.parseBoolean((String)smc.getProperty(SynapseConstants.IS_INBOUND))){
+                inboundMessageContextQueue.publish(smc);
+                return;
+            }
             AxisEngine.send(messageContext);
 
         } catch (AxisFault e) {
